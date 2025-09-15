@@ -13,23 +13,38 @@ async def get_session():
     async with AsyncSessionLocal() as session:
         yield session
 
+# @router.post("/", response_model=PaymentResponse)
+# async def create_payment(payment: PaymentCreate, session: AsyncSession = Depends(get_session)):
+#     db_payment = Payment(**payment.model_dump())
+#     session.add(db_payment)
+#     await session.commit()
+#     await session.refresh(db_payment)
+    
+#     # Eager load client relationship before returning
+#     result = await session.execute(
+#         select(Payment)
+#         .options(selectinload(Payment.client))
+#         .where(Payment.id == db_payment.id)
+#     )
+#     db_payment_with_client = result.scalar_one()
+    
+#     return db_payment_with_client
+
 @router.post("/", response_model=PaymentResponse)
 async def create_payment(payment: PaymentCreate, session: AsyncSession = Depends(get_session)):
     db_payment = Payment(**payment.model_dump())
     session.add(db_payment)
     await session.commit()
     await session.refresh(db_payment)
-    
-    # Eager load client relationship before returning
+
+    # Eager load client
     result = await session.execute(
         select(Payment)
         .options(selectinload(Payment.client))
         .where(Payment.id == db_payment.id)
     )
     db_payment_with_client = result.scalar_one()
-    
-    return db_payment_with_client
-
+    return db_payment_with_client  # This ensures `client` is present
 
 @router.get("/", response_model=list[PaymentResponse])
 async def get_payments(
