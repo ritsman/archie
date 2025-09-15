@@ -1,6 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from datetime import date
+from datetime import date as DateType
 from typing import List, Optional
+
 #salesman class
 #---------------------------------
 class SalesmanBase(BaseModel):
@@ -112,3 +114,25 @@ class SlipSequenceBase(BaseModel):
 class SlipSequenceResponse(SlipSequenceBase):
     class Config:
         from_attributes = True
+
+
+
+
+
+class PaymentBase(BaseModel):
+    client_id: int
+    amount: float
+    notes: Optional[str] = None
+    date: DateType = Field(default_factory=date.today)
+
+class PaymentCreate(PaymentBase):
+    pass
+
+class PaymentResponse(PaymentBase):
+    id: int
+    client: Optional[ClientMini]  # Include nested client info
+    class Config:
+        from_attributes = True  # For loading from ORM model
+
+
+

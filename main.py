@@ -7,7 +7,7 @@ from database import AsyncSessionLocal, engine
 from contextlib import asynccontextmanager
 
 from fastapi.middleware.cors import CORSMiddleware
-from routers import clients_router,products_router,slips_router # Importing the clients router
+from routers import clients_router,products_router,slips_router,payments_router# Importing the clients router
 
 
 
@@ -98,3 +98,4 @@ async def delete_salesman(
 app.include_router(clients_router)  # Include the clients router
 app.include_router(products_router)  # Include the clients router
 app.include_router(slips_router)  # Include the clients router
+app.include_router(payments_router)  # Include the payments router

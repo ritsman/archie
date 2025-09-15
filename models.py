@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float,Column, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base
+import datetime
 #from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
 #from sqlalchemy.orm import relationship
 #from .database import Base
@@ -70,3 +71,17 @@ class SlipSequence(Base):
     year2 = Column(String(2), primary_key=True)
     month2 = Column(String(2), primary_key=True)
     last_seq = Column(Integer, nullable=False)
+
+
+
+
+class Payment(Base):
+    __tablename__ = "payments"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    client_id = Column(Integer, ForeignKey("clients.id"), nullable=False, index=True)
+    amount = Column(Float, nullable=False)
+    notes = Column(String, nullable=True)
+    date = Column(Date, default=datetime.date.today, nullable=False)
+
+    client = relationship("Clients")  # Optional, for ORM navigation if needed

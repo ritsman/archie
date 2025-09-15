@@ -48,7 +48,7 @@ async def get_next_slip_number(session: AsyncSession, slip_date):
 @router.post("/ee", response_model=SlipResponse)
 async def create_slip(slip: SlipCreate, session: AsyncSession = Depends(get_session)):
     #logging.info(f"Received slip data: {slip}")
-    print(slip)
+    #print(slip)
     async with session.begin():  # ensures this block is a transaction
         slip_number = await get_next_slip_number(session, slip.slip_date)
         db_slip = Slip(
@@ -79,10 +79,13 @@ async def create_slip(slip: SlipCreate, session: AsyncSession = Depends(get_sess
     await session.refresh(db_slip)
     return db_slip
 
+from sqlalchemy.orm import selectinload
+
 @router.post("/", response_model=SlipResponse)
 async def create_slip(slip: SlipCreate, session: AsyncSession = Depends(get_session)):
     async with session.begin():
         slip_number = await get_next_slip_number(session, slip.slip_date)
+
         db_slip = Slip(
             slip_number=slip_number,
             client_id=slip.client_id,
@@ -92,7 +95,7 @@ async def create_slip(slip: SlipCreate, session: AsyncSession = Depends(get_sess
             total_amount=slip.total_amount
         )
         session.add(db_slip)
-        await session.flush()
+        await session.flush()  # ensures db_slip.id exists
 
         for detail in slip.slip_details:
             db_detail = SlipDetail(
@@ -102,20 +105,24 @@ async def create_slip(slip: SlipCreate, session: AsyncSession = Depends(get_sess
                 quantity=detail.quantity,
                 rate=detail.rate,
                 amount=detail.amount,
-                slip_date=detail.slip_date
+                slip_date=detail.slip_date,
             )
             session.add(db_detail)
 
-    await session.commit()
-
-    # Eager load slip_details to avoid lazy loading issues
+    # ✅ Re-query with all relationships eager-loaded
     result = await session.execute(
-        select(Slip).options(selectinload(Slip.slip_details)).filter(Slip.id == db_slip.id)
+        select(Slip)
+        .options(
+            selectinload(Slip.slip_details).selectinload(SlipDetail.product),  # load product
+            selectinload(Slip.client),  # load client
+            selectinload(Slip.salesman)  # load salesman
+        )
+        .filter(Slip.id == db_slip.id)
     )
     slip_with_details = result.scalar_one()
 
-    return slip_with_details
-
+    # ✅ Convert to Pydantic model (safe now)
+    return SlipResponse.model_validate(slip_with_details, from_attributes=True)
 
 
 
