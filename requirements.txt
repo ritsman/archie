@@ -1,11 +1,11 @@
-fastapi==0.95.2
-uvicorn[standard]==0.22.0
-SQLAlchemy==2.0.17
-asyncpg==0.27.0           # PostgreSQL async driver
-databases==0.6.1          # Optional, if used for async DB layer
-pydantic==2.0.4           # Pydantic v2 (note some warnings about config keys change)
-psycopg2-binary==2.9.7    # If you use psycopg2 sync driver somewhere
-python-multipart==0.0.6   # For form handling if needed
-alembic==1.11.1           # For migrations if you run DB migrations
-python-dotenv==1.0.0      # For env variables loading if used
-fastapi-utils==0.2.1      # Optional, utilities for FastAPI
+fastapi
+uvicorn[standard]
+SQLAlchemy
+asyncpg           # PostgreSQL async driver
+databases          # Optional, if used for async DB layer
+pydantic           # Pydantic v2 (note some warnings about config keys change)
+psycopg2-binary    # If you use psycopg2 sync driver somewhere
+python-multipart   # For form handling if needed
+alembic          # For migrations if you run DB migrations
+python-dotenv      # For env variables loading if used
+fastapi-utils      # Optional, utilities for FastAPI

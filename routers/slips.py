@@ -83,6 +83,7 @@ from sqlalchemy.orm import selectinload
 
 @router.post("/", response_model=SlipResponse)
 async def create_slip(slip: SlipCreate, session: AsyncSession = Depends(get_session)):
+    print(session)
     async with session.begin():
         slip_number = await get_next_slip_number(session, slip.slip_date)
 
@@ -94,6 +95,7 @@ async def create_slip(slip: SlipCreate, session: AsyncSession = Depends(get_sess
             vehicle_number=slip.vehicle_number,
             total_amount=slip.total_amount
         )
+        print(db_slip)
         session.add(db_slip)
         await session.flush()  # ensures db_slip.id exists
 

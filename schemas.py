@@ -71,7 +71,7 @@ class SalesmanMini(BaseModel):
 class SlipDetailBase(BaseModel):
     product_id: int
     weight: Optional[float] = None
-    quantity: int
+    quantity: float
     rate: float
     amount: float
     slip_date: date

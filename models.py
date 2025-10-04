@@ -55,7 +55,7 @@ class SlipDetail(Base):
     slip_id = Column(Integer, ForeignKey("slips.id"), nullable=False, index=True)  # FK to slips
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     weight = Column(Float, nullable=True)
-    quantity = Column(Integer, nullable=False)
+    quantity = Column(Float, nullable=False)
     rate = Column(Float, nullable=False)
     amount = Column(Float, nullable=False)
     slip_date = Column(Date, nullable=False)  # typically same as Slip.slip_date but stored here too
