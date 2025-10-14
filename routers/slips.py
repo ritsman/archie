@@ -93,6 +93,7 @@ async def create_slip(slip: SlipCreate, session: AsyncSession = Depends(get_sess
             salesman_id=slip.salesman_id,
             slip_date=slip.slip_date,
             vehicle_number=slip.vehicle_number,
+            transport_charges=slip.transport_charges,
             total_amount=slip.total_amount
         )
         print(db_slip)

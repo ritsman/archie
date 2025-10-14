@@ -75,6 +75,7 @@ class SlipDetailBase(BaseModel):
     rate: float
     amount: float
     slip_date: date
+    transport_charges: Optional[float] = 0.0
 
 class SlipDetailCreate(SlipDetailBase):
     pass
@@ -92,6 +93,7 @@ class SlipBase(BaseModel):
     slip_date: date
     vehicle_number: Optional[str] = None
     total_amount: float
+    transport_charges: Optional[float] = 0.0
 
 class SlipCreate(SlipBase):
     slip_details: List[SlipDetailCreate]
